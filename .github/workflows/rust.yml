@@ -1,4 +1,4 @@
-name: Rust
+name: Rust Workflow
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-linux:
 
     runs-on: ubuntu-latest
 
@@ -19,6 +19,27 @@ jobs:
     - name: Build client
       run: |
         cd client/
+        cargo build
+
+    - name: Build Server
+      run: |
+        cd server/
+        cargo build
+
+  build-macos:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build client
+      run: |
+        cd client/
+        cargo build
+
+    - name: Build Server
+      run: |
+        cd server/
         cargo build
       
       
