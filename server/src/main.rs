@@ -22,5 +22,16 @@ fn handle_client(stream: TcpStream) {
 }
 
 fn main() {
+    let listener = TcpListener::bind("127.0.0.1:8080").expect("Cannot bind port 8080 some application using that port!!"); 
+    println!("Listening on port 8080");
 
+    let mut num_connections = 0;
+
+    for stream in listener.incoming() {
+        let stream = stream.expect("An error occured while handling connections");
+        thread::spawn(|| {
+            handle_client(stream);
+        });
+        num_connections += 1;
+    }
 }
