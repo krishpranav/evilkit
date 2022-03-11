@@ -3,9 +3,6 @@ use std::os::unix::io::{AsRawFd, FromRawFd};
 use std::process::{Command, Stdio};
 use std::thread;
 
-/**
- * server code
- */
 fn handle_client(stream: TcpStream) {
     let fd = stream.as_raw_fd(); 
 
@@ -22,16 +19,19 @@ fn handle_client(stream: TcpStream) {
 }
 
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:8080").expect("Cannot bind port 8080 some application using that port!!"); 
-    println!("Listening on port 8080");
+    let listener = TcpListener::bind("192.168.0.9:8080").expect("Cannot bind to port 8080, some application is using it"); 
+    println!("Listening on port 8080...");
 
     let mut num_connections = 0;
 
     for stream in listener.incoming() {
-        let stream = stream.expect("An error occured while handling connections");
+        let stream = stream.expect("An error occurred trying to handle an incoming connection");
+        
+        println!("New connection from {}; Current connections: {}", stream.peer_addr().unwrap(), num_connections);
         thread::spawn(|| {
-            handle_client(stream);
+            handle_client(stream); 
         });
+
         num_connections += 1;
     }
 }
